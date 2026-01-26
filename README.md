@@ -1,4 +1,4 @@
-First We will go into backedn foler then run mosquito code to runs are:
+First We will go into backend foler then run mosquito code to runs are:
 1. cd backend
 2. & "C:\Program Files\mosquitto\mosquitto.exe" -v
 
@@ -12,3 +12,9 @@ First We will go into backedn foler then run mosquito code to runs are:
 3. ng serve
 
 Frontend Terminal will give localhost/4200, Try open this and Project wll get displayed.
+
+
+packages to be instaled prior:
+1. node
+2. angular cli
+3. mosquito/mqtt
