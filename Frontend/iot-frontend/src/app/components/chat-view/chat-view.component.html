@@ -1,0 +1,20 @@
+<div class="chat-container">
+  <div class="header">
+    <h2>Live Messaging Terminal</h2>
+    <div class="controls">
+      <input [(ngModel)]="targetId" placeholder="Device ID (e.g. fan_01)">
+      <button class="btn-on" (click)="send('ON')">SEND ON</button>
+      <button class="btn-off" (click)="send('OFF')">SEND OFF</button>
+    </div>
+  </div>
+
+  <div class="message-list">
+    <div *ngFor="let msg of logs" class="msg-bubble">
+      <div class="msg-header">
+        <span class="device-name">{{ msg.topic }}</span>
+        <span class="time">{{ msg.timestamp | date:'HH:mm:ss' }}</span>
+      </div>
+      <div class="msg-body">{{ msg.payload }}</div>
+    </div>
+  </div>
+</div>
