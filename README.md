@@ -67,6 +67,13 @@ Offline: Can be triggered manually by a user message or automatically if the hea
 
 ACK: Every command sent from the dashboard waits for a confirmation message from the device to ensure reliability.
 
+<img width="1912" height="925" alt="image" src="https://github.com/user-attachments/assets/877765b6-eb00-4c1e-893b-db2b89c6f048" />
+<img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/242d7bba-a747-4723-8f41-8d17c747f593" />
+<img width="1910" height="916" alt="image" src="https://github.com/user-attachments/assets/d83b2e50-3bf4-4670-9f38-d579d810568b" />
+
+
+
+
 👤 Author
 Muhammad Awais
 
