@@ -5,7 +5,7 @@ A full-stack IoT orchestration platform that allows for real-time communication,
 
 ## 🚀 Overview
 
-This system manages IoT nodes (like bulbs and fans) through a "Chat" style interface. It allows users to control individual devices or entire rooms (groups) simultaneously. The project implements a robust **Heartbeat** and **Acknowledgment (ACK)** system to ensure device state accuracy.
+This system manages IoT nodes types (like bulbs, fans, tv, ac, curtains and cleaner) through a "Chat" style interface. It allows users to control individual devices or entire rooms (groups) simultaneously. The project implements a robust **Heartbeat** and **Acknowledgment (ACK)** system to ensure device state accuracy.
 
 ## ✨ Key Features
 
