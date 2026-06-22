@@ -1,11 +1,17 @@
 <div class="app-container">
   <aside class="device-sidebar">
     <header class="sidebar-header">
-      <h2>Devices</h2>
+      <div class="header-top">
+        <h2>Devices</h2>
+        <div class="user-panel" *ngIf="currentUser as user">
+          <span class="user-badge" [class.admin]="user.role === 'admin'">{{ user.username }} ({{ user.role }})</span>
+          <button class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+      </div>
       <span class="online-badge">{{ activeCount }} Online</span>
     </header>
 
-    <div class="group-controls" *ngIf="selectedForGrouping.size > 0">
+    <div class="group-controls" *ngIf="isAdmin && selectedForGrouping.size > 0">
       <input [(ngModel)]="newGroupName" placeholder="Group Name (e.g. Living Room)">
       <button (click)="createGroup()">Group Selected ({{ selectedForGrouping.size }})</button>
     </div>
@@ -21,7 +27,7 @@
         <ul class="device-list">
           <li *ngFor="let item of getUnassignedDevices()"
               class="device-item"
-              draggable="true"
+              [attr.draggable]="isAdmin ? true : null"
               (dragstart)="onDragStart($event, item.id)"
               (dragend)="onDragEnd($event)"
               [class.selected]="selectedDeviceId === item.id"
@@ -31,15 +37,18 @@
               <div class="drag-handle" title="Drag to reorder">
                 <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M7,19V17H9V19H7M11,19V17H13V19H11M15,19V17H17V19H15M7,15V13H9V15H7M11,15V13H13V15H11M15,15V13H17V15H15M7,11V9H9V11H7M11,11V9H13V11H11M15,11V9H17V11H15M7,7V5H9V7H7M11,7V5H13V7H11M15,7V5H17V7H15Z"/></svg>
               </div>
-              <div class="device-selector-checkbox" (click)="$event.stopPropagation()">
+              <div class="device-selector-checkbox" *ngIf="isAdmin" (click)="$event.stopPropagation()">
                 <input type="checkbox" [checked]="selectedForGrouping.has(item.id)" (change)="toggleSelection(item.id)">
               </div>
               <div class="device-info">
                 <span class="indicator" [class.on]="isDeviceOnline(item.lastSeen, item.interval)"></span>
-                <span class="device-name">{{ item.id }}</span>
+                <div class="device-name-wrap">
+                  <span class="device-name">{{ getDeviceDisplayName(item) }}</span>
+                  <span class="device-state">{{ getDeviceStateSummary(item) }}</span>
+                </div>
               </div>
               
-              <div class="heartbeat-selector" (click)="$event.stopPropagation()">
+              <div class="heartbeat-selector" *ngIf="isAdmin" (click)="$event.stopPropagation()">
                 <label>HB:</label>
                 <select [ngModel]="item.interval || 60" (ngModelChange)="updateInterval(item.id, $event)">
                   <option [value]="10">10s</option>
@@ -51,7 +60,7 @@
                 </select>
               </div>
 
-              <button class="delete-btn" (click)="removeDevice($event, item.id)" title="Delete Device">
+              <button class="delete-btn" *ngIf="isAdmin" (click)="removeDevice($event, item.id)" title="Delete Device">
                 <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19V4M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
               </button>
             </div>
@@ -74,7 +83,7 @@
               <div class="group-title-area">
                 <ng-container *ngIf="editingGroupId !== group.id">
                   <span class="group-name-display">{{ group.name }}</span>
-                  <div class="group-actions">
+                  <div class="group-actions" *ngIf="isAdmin">
                     <button class="icon-btn edit-btn" (click)="startEditGroup($event, group)" title="Edit Group Name">
                       <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.18L3,17.25Z"/></svg>
                     </button>
@@ -95,7 +104,7 @@
             <ul class="sub-device-list">
               <li *ngFor="let devId of group.deviceIds" 
                   class="device-item sub-device"
-                  draggable="true"
+                  [attr.draggable]="isAdmin ? true : null"
                   (dragstart)="onDragStart($event, devId)"
                   (dragend)="onDragEnd($event)"
                   [class.selected]="selectedDeviceId === devId"
@@ -107,10 +116,13 @@
                   </div>
                   <div class="device-info">
                     <span class="indicator" [class.on]="isDeviceOnline(deviceMap.get(devId)?.lastSeen, deviceMap.get(devId)?.interval)"></span>
-                    <span class="device-name">{{ devId }}</span>
+                    <div class="device-name-wrap">
+                      <span class="device-name">{{ getDeviceDisplayName(deviceMap.get(devId)) }}</span>
+                      <span class="device-state">{{ getDeviceStateSummary(deviceMap.get(devId)) }}</span>
+                    </div>
                   </div>
 
-                  <div class="heartbeat-selector" (click)="$event.stopPropagation()">
+                  <div class="heartbeat-selector" *ngIf="isAdmin" (click)="$event.stopPropagation()">
                     <label>HB:</label>
                     <select [ngModel]="deviceMap.get(devId)?.interval || 60" (ngModelChange)="updateInterval(devId, $event)">
                       <option [value]="10">10s</option>
@@ -122,7 +134,7 @@
                     </select>
                   </div>
 
-                  <button class="delete-btn" (click)="removeDevice($event, devId)" title="Delete Device">
+                  <button class="delete-btn" *ngIf="isAdmin" (click)="removeDevice($event, devId)" title="Delete Device">
                     <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19V4M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
                   </button>
                 </div>
@@ -133,9 +145,11 @@
       </section>
     </div>
 
-    <div class="add-device">
-      <input [(ngModel)]="newDeviceId" placeholder="Device ID" (keyup.enter)="addDevice()">
-      <button (click)="addDevice()">Add</button>
+    <div class="add-device" *ngIf="isAdmin">
+      <select [(ngModel)]="selectedDeviceType" class="device-type-select">
+        <option *ngFor="let type of deviceTypes" [value]="type.id">{{ type.label }}</option>
+      </select>
+      <button (click)="addDevice()">Add Device</button>
     </div>
 
     <div class="system-status">
@@ -153,11 +167,11 @@
     <ng-container *ngIf="selectedDeviceId || selectedGroupId">
       <header class="chat-header">
         <div class="header-left">
-           <h3 *ngIf="selectedDeviceId">Chat with {{ selectedDeviceId }}</h3>
+           <h3 *ngIf="selectedDeviceId">Chat with {{ getDeviceDisplayName(getDevice(selectedDeviceId!)) }}</h3>
            <h3 *ngIf="selectedGroupId">Group Chat: {{ getSelectedGroupName() }}</h3>
            
            <span class="hb-indicator-text" *ngIf="selectedDeviceId">
-             Heartbeat: {{ getDevice(selectedDeviceId!)?.interval || 60 }}s
+             {{ getDeviceStateSummary(getDevice(selectedDeviceId!)) }} · Heartbeat {{ getDevice(selectedDeviceId!)?.interval || 60 }}s
            </span>
            <span class="hb-indicator-text" *ngIf="selectedGroupId">
              Broadcast to {{ getSelectedGroupDeviceCount() }} devices
@@ -181,8 +195,14 @@
         </div>
       </div>
 
+      <div class="device-controls" *ngIf="selectedDeviceId && activeDeviceType === 'curtains'">
+        <button type="button" (click)="sendCurtainCommand('full')" [disabled]="sending">Full</button>
+        <button type="button" (click)="sendCurtainCommand('half')" [disabled]="sending">Half</button>
+        <button type="button" (click)="sendCurtainCommand('0')" [disabled]="sending">Closed</button>
+      </div>
+
       <div class="chat-input">
-        <input [(ngModel)]="commandInput" [placeholder]="selectedGroupId ? 'Broadcast message...' : 'Command...'" (keyup.enter)="send()" [disabled]="sending">
+        <input [(ngModel)]="commandInput" [placeholder]="getChatPlaceholder()" (keyup.enter)="send()" [disabled]="sending">
         <button type="button" (click)="send()" [disabled]="sending">{{ sending ? 'Sending...' : 'Send' }}</button>
       </div>
     </ng-container>

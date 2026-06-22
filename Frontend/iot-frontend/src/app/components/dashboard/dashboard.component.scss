@@ -26,10 +26,45 @@
 }
 
 .sidebar-header h2 {
-  margin: 0 0 8px 0;
+  margin: 0;
   font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.user-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.user-badge.admin {
+  background: #2563eb;
+}
+
+.logout-btn {
+  border: 1px solid #475569;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .online-badge {
@@ -289,6 +324,12 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
+.device-name-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .device-name {
   font-weight: 500;
   font-size: 14px;
@@ -296,6 +337,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: #e2e8f0;
+}
+
+.device-state {
+  font-size: 11px;
+  color: #64748b;
 }
 
 .heartbeat-selector {
@@ -372,7 +418,9 @@
   background: #0f172a;
 }
 
-.add-device input {
+.add-device input,
+.add-device select,
+.device-type-select {
   flex: 1;
   padding: 10px 14px;
   border: 1px solid #1e293b;
@@ -514,6 +562,33 @@
   display: block;
   margin-top: 6px;
   text-align: right;
+}
+
+.device-controls {
+  display: flex;
+  gap: 10px;
+  padding: 0 30px 12px;
+  background: #0f172a55;
+}
+
+.device-controls button {
+  padding: 8px 14px;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background: #1e293b;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 13px;
+
+  &:hover:not(:disabled) {
+    border-color: #3b82f6;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .chat-input {

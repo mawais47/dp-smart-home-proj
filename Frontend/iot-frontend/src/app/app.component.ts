@@ -5,7 +5,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
   selector: 'app-root',
   standalone: true,
   imports: [DashboardComponent], // This tells Angular to use our dashboard
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  template: `<app-dashboard></app-dashboard>` // This displays it
 })
 export class AppComponent {}

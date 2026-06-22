@@ -6,8 +6,14 @@ import { IotService } from '../../services/iot.service';
   selector: 'app-device-list',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './device-list.component.html',
-  styleUrls: ['./device-list.component.scss']
+  template: `
+    <div style="padding: 10px;">
+      <h3>Active Devices</h3>
+      <ul>
+        <li *ngFor="let dev of devices" style="color: green;">● {{ dev }}</li>
+      </ul>
+    </div>
+  `
 })
 export class DeviceListComponent implements OnInit {
   devices = new Set<string>();

@@ -17,7 +17,7 @@ This system manages IoT nodes (like bulbs and fans) through a "Chat" style inter
 
 ## 🛠️ Tech Stack
 
-- **Backend:** [Go (Golang)](https://go.dev/)
+- **Backend:** [Go (Golang)](https://go.dev/) with [Gin](https://gin-gonic.com/)
 - **Frontend:** [Angular](https://angular.io/) & [TypeScript](https://www.typescriptlang.org/)
 - **Messaging:** [Mosquitto MQTT Broker](https://mosquitto.org/)
 - **Communication:** WebSockets & MQTT Protocol

@@ -63,30 +63,46 @@ func NewMQTTClient(brokerURL string, onMessageReceived func(models.DeviceMessage
 
 func (m *MQTTClient) handleCommandSimulation(deviceID, payload string) {
 	statusTopic := fmt.Sprintf("iot/devices/%s/status", deviceID)
-	
-	// Respond with "RECEIVED" for any command
+
 	m.Publish(statusTopic, "RECEIVED")
 
 	lowerPayload := strings.ToLower(payload)
-	if lowerPayload == "offline" {
+	upperPayload := strings.ToUpper(payload)
+
+	switch {
+	case lowerPayload == "offline":
 		fmt.Printf("Device %s going offline via command\n", deviceID)
 		m.StopHeartbeat(deviceID)
 		m.Publish(statusTopic, "OFFLINE")
-	} else if lowerPayload == "online" {
+	case lowerPayload == "online", lowerPayload == "on":
 		fmt.Printf("Device %s coming online via command\n", deviceID)
 		interval, exists := m.Intervals[deviceID]
 		if !exists {
 			interval = 1 * time.Minute
 		}
 		m.StartHeartbeat(deviceID, interval)
-		// StartHeartbeat already sends an initial "ONLINE" message
-	} else if strings.HasPrefix(lowerPayload, "set_interval_") {
+	case strings.HasPrefix(lowerPayload, "set_interval_"):
 		secondsStr := strings.TrimPrefix(lowerPayload, "set_interval_")
 		seconds, err := strconv.Atoi(secondsStr)
 		if err == nil {
 			fmt.Printf("Updating heartbeat interval for %s to %d seconds\n", deviceID, seconds)
 			m.StartHeartbeat(deviceID, time.Duration(seconds)*time.Second)
 		}
+	case strings.HasPrefix(upperPayload, "BRIGHTNESS_"):
+		value := strings.TrimPrefix(upperPayload, "BRIGHTNESS_")
+		m.Publish(statusTopic, fmt.Sprintf("BRIGHTNESS:%s", value))
+	case strings.HasPrefix(upperPayload, "SPEED_"):
+		value := strings.TrimPrefix(upperPayload, "SPEED_")
+		m.Publish(statusTopic, fmt.Sprintf("SPEED:%s", value))
+	case strings.HasPrefix(upperPayload, "TEMP_"):
+		value := strings.TrimPrefix(upperPayload, "TEMP_")
+		m.Publish(statusTopic, fmt.Sprintf("TEMP:%s", value))
+	case upperPayload == "CURTAIN_FULL":
+		m.Publish(statusTopic, "CURTAIN:full")
+	case upperPayload == "CURTAIN_HALF":
+		m.Publish(statusTopic, "CURTAIN:half")
+	case upperPayload == "CURTAIN_0":
+		m.Publish(statusTopic, "CURTAIN:0")
 	}
 }
 

@@ -1,0 +1,32 @@
+<div class="login-page">
+  <div class="login-card">
+    <h1>IoT Command Center</h1>
+    <p class="subtitle">Sign in to continue</p>
+
+    <div class="role-tabs">
+      <button type="button" [class.active]="role === 'user'" (click)="setRole('user')">User Login</button>
+      <button type="button" [class.active]="role === 'admin'" (click)="setRole('admin')">Admin Login</button>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <label>
+        Username
+        <input [(ngModel)]="username" name="username" autocomplete="username" placeholder="Enter username">
+      </label>
+
+      <label>
+        Password
+        <input [(ngModel)]="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password">
+      </label>
+
+      <p class="hint" *ngIf="role === 'admin'">Default admin: admin / admin123</p>
+      <p class="hint" *ngIf="role === 'user'">Default user: user / user123</p>
+
+      <p class="error" *ngIf="error()">{{ error() }}</p>
+
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : (role === 'admin' ? 'Login as Admin' : 'Login as User') }}
+      </button>
+    </form>
+  </div>
+</div>
