@@ -1,14 +1,16 @@
-Markdown
 # IoT Chat & Device Management System
 
 A full-stack IoT orchestration platform that allows for real-time communication, logical device grouping, and health monitoring using a Go backend and an Angular frontend.
 
 ## 🚀 Overview
 
-This system manages IoT nodes types (like bulbs, fans, tv, ac, curtains and cleaner) through a "Chat" style interface. It allows users to control individual devices or entire rooms (groups) simultaneously. The project implements a robust **Heartbeat** and **Acknowledgment (ACK)** system to ensure device state accuracy.
+This system manages IoT node types (like bulbs, fans, TV, AC, curtains, and cleaners) through a "Chat" style interface. It allows users to control individual devices or entire rooms (groups) simultaneously. The project implements a robust **Heartbeat** and **Acknowledgment (ACK)** system to ensure device state accuracy, secured by role-based session authentication.
 
 ## ✨ Key Features
 
+- **Session-Based Authentication:** Secure user sessions using cookies/sessions to differentiate access levels.
+- **Role-Based Access Control (RBAC):** - **Admin:** Full control to add, configure, and delete devices from the system.
+  - **User:** Can interact with devices, change operational values (e.g., speed, state), toggle offline status, and manage group assignments.
 - **Real-time Messaging:** Low-latency communication via WebSockets and MQTT.
 - **Logical Grouping:** Assign devices to groups (e.g., *Living Room*, *Bedroom*) and control them with a single command.
 - **Variable Heartbeat Monitoring:** Supports configurable device heartbeats (1s, 30s, 1m, 2m, 5m, 10m) to monitor "Online/Offline" status.
@@ -17,10 +19,10 @@ This system manages IoT nodes types (like bulbs, fans, tv, ac, curtains and clea
 
 ## 🛠️ Tech Stack
 
-- **Backend:** [Go (Golang)](https://go.dev/) with [Gin](https://gin-gonic.com/)
+- **Backend:** [Go (Golang)](https://go.dev/) with [Gin Framework](https://gin-gonic.com/) (RESTful APIs & Session management)
 - **Frontend:** [Angular](https://angular.io/) & [TypeScript](https://www.typescriptlang.org/)
 - **Messaging:** [Mosquitto MQTT Broker](https://mosquitto.org/)
-- **Communication:** WebSockets & MQTT Protocol
+- **Communication:** WebSockets, MQTT Protocol, and RESTful APIs
 
 ## 📋 Prerequisites
 
@@ -34,6 +36,7 @@ Ensure you have the following installed:
 
 ### 1. Start MQTT Broker
 Open a terminal and run the Mosquitto broker in verbose mode:
+
 ```powershell
 cd backend
 & "C:\Program Files\mosquitto\mosquitto.exe" -v
