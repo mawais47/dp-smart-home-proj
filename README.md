@@ -1,42 +1,158 @@
-# IoT Chat & Device Management System
+SmartHome – IoT Chat & Device Management System
+A full‑stack IoT orchestration platform enabling real‑time device control, logical grouping, and health monitoring.
+Built with a Go (Golang) backend, Angular frontend, and Mosquitto MQTT messaging layer.
 
-A full-stack IoT orchestration platform that allows for real-time communication, logical device grouping, and health monitoring using a Go backend and an Angular frontend.
+🚀 Overview
+SmartHome manages multiple IoT device types — bulbs, fans, AC units, curtains, TVs, and smart cleaners — through a modern, chat‑style interface.
+Users can control individual devices or entire rooms, while the system ensures accurate device state synchronization using a Heartbeat + ACK verification loop.
 
-## 🚀 Overview
+The platform is secured with session‑based authentication and role‑based access control (RBAC).
 
-This system manages IoT node types (like bulbs, fans, TV, AC, curtains, and cleaners) through a "Chat" style interface. It allows users to control individual devices or entire rooms (groups) simultaneously. The project implements a robust **Heartbeat** and **Acknowledgment (ACK)** system to ensure device state accuracy, secured by role-based session authentication.
+🔐 Authentication & Role Permissions
+SmartHomeX uses secure session cookies and backend middleware to enforce strict access boundaries.
 
-## ✨ Key Features
+🛡 Admin Role
+Admins have full system‑level control.
 
-- **Session-Based Authentication:** Secure user sessions using cookies/sessions to differentiate access levels.
-- **Role-Based Access Control (RBAC):** - **Admin:** Full control to add, configure, and delete devices from the system.
-  - **User:** Can interact with devices, change operational values (e.g., speed, state), toggle offline status, and manage group assignments.
-- **Real-time Messaging:** Low-latency communication via WebSockets and MQTT.
-- **Logical Grouping:** Assign devices to groups (e.g., *Living Room*, *Bedroom*) and control them with a single command.
-- **Variable Heartbeat Monitoring:** Supports configurable device heartbeats (1s, 30s, 1m, 2m, 5m, 10m) to monitor "Online/Offline" status.
-- **ACK System:** Commands sent to devices require an Acknowledgment message back to verify the action was successful.
-- **Responsive Dashboard:** Built with Angular for a modern, real-time user experience.
+✅ Admin Can:
+Add new devices
 
-## 🛠️ Tech Stack
+Delete devices
 
-- **Backend:** [Go (Golang)](https://go.dev/) with [Gin Framework](https://gin-gonic.com/) (RESTful APIs & Session management)
-- **Frontend:** [Angular](https://angular.io/) & [TypeScript](https://www.typescriptlang.org/)
-- **Messaging:** [Mosquitto MQTT Broker](https://mosquitto.org/)
-- **Communication:** WebSockets, MQTT Protocol, and RESTful APIs
+Set initial heartbeat interval (10s → 10m)
 
-## 📋 Prerequisites
+Fan speed
 
-Ensure you have the following installed:
-- **Node.js** (v18+)
-- **Angular CLI** (`npm install -g @angular/cli`)
-- **Go** (v1.20+)
-- **Mosquitto MQTT**
+Bulb brightness
+
+AC temperature
+
+Curtain mode (Full / Half / Closed)
+
+Cleaner speed
+
+Create groups/rooms
+
+Assign devices to groups
+
+
+👤 User Role
+Users interact with devices but cannot modify system structure.
+
+✅ User Can:
+Change device heartbeat interval
+
+Change device mode / operational values
+
+Fan speed
+
+Bulb brightness
+
+AC temperature
+
+Curtain mode
+
+Cleaner speed
+
+Control devices in real time
+
+Control entire groups/rooms
+
+View device Online/Offline status
+
+Use chat‑style interface for commands
+
+❌ User Cannot:
+Add devices
+
+Delete devices
+
+Modify initial device configuration
+
+Access admin‑only APIs
+
+✨ Key Features
+⚡ Real-Time Messaging
+WebSockets for instant UI updates
+
+MQTT for device‑level communication
+
+Low‑latency, event‑driven architecture
+
+🏠 Logical Grouping
+Create rooms (e.g., Living Room, Bedroom)
+
+Assign multiple devices to a group
+
+Control all devices inside a room with one command
+
+❤️ Variable Heartbeat Monitoring
+Each device reports its status at a configurable interval:
+
+10s
+
+30s
+
+1m
+
+2m
+
+5m
+
+10m
+
+If a device misses its heartbeat window, it is marked Offline.
+
+✔️ ACK Verification System
+Every command sent to a device must return an ACK message.
+
+This ensures:
+
+No ghost states
+
+UI always reflects the real physical device state
+
+Reliable communication even in unstable networks
+
+
+🧠 Supported Device Types
+Smart Bulbs (0–100% brightness)
+
+Fans (speed 1–5)
+
+Air Conditioners (temperature control)
+
+Smart Curtains (Full / Half / Closed)
+
+Smart Cleaners (speed 1–3)
+
+TVs (ON/OFF)
+
+📡 Communication Flow
+User/Admin sends command → WebSocket → Backend
+
+Backend updates DB → publishes MQTT message
+
+Device receives command → executes → sends ACK
+
+Backend receives ACK → updates UI in real time
+
+🔮 Future Enhancements
+Mobile app (Flutter / React Native)
+
+Push notifications for offline devices
+
+mDNS auto‑discovery
+
+Historical analytics & charts
+
+AI‑based anomaly detection
+
 
 ## 🚦 Getting Started
 
 ### 1. Start MQTT Broker
 Open a terminal and run the Mosquitto broker in verbose mode:
-
 ```powershell
 cd backend
 & "C:\Program Files\mosquitto\mosquitto.exe" -v
@@ -58,23 +174,6 @@ cd frontend/iot-frontend
 npm install
 ng serve
 The application will be available at: http://localhost:4200
-
-📖 System Logic
-Device Grouping
-Devices like bulb_01 and fan_01 can be controlled individually. However, they are also associated with a group ID (e.g., living_room). Sending an OFF command to the living_room group will iterate through all linked devices and update their state.
-
-Heartbeat & Status
-Online: Device sends a message; the backend marks it active.
-
-Offline: Can be triggered manually by a user message or automatically if the heartbeat interval (e.g., 30s) is exceeded without a ping.
-
-ACK: Every command sent from the dashboard waits for a confirmation message from the device to ensure reliability.
-
-<img width="1912" height="925" alt="image" src="https://github.com/user-attachments/assets/877765b6-eb00-4c1e-893b-db2b89c6f048" />
-<img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/242d7bba-a747-4723-8f41-8d17c747f593" />
-<img width="1910" height="916" alt="image" src="https://github.com/user-attachments/assets/d83b2e50-3bf4-4670-9f38-d579d810568b" />
-
-
 
 
 👤 Author
